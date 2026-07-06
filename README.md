@@ -32,11 +32,11 @@ near a breakpoint may differ from earlier releases (see the version notes).
 
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
-[*Finding Motifs in Time Series*](http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
+[*Finding Motifs in Time Series*](https://web.archive.org/web/2021/http://cs.gmu.edu/~jessica/Lin_motif.pdf), 
 The 2nd Workshop on Temporal Data Mining, the 8th ACM Int'l Conference on KDD (2002)
 
 [2] Patel, P., Keogh, E., Lin, J., Lonardi, S., 
-[*Mining Motifs in Massive Time Series Databases*](http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), 
+[*Mining Motifs in Massive Time Series Databases*](https://web.archive.org/web/2021/http://www.cs.gmu.edu/~jessica/publications/motif_icdm02.pdf), 
 In Proc. ICDM (2002)
 
 [3] Keogh, E., Lin, J., Fu, A.,
@@ -61,7 +61,7 @@ SAX is used to transform a sequence of rational numbers (i.e., a time series) in
 
 ![SAX in a nutshell](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/sax_transform.png)
 
-As discretization is probably the most used transformation in data mining, SAX has been widely used throughout the field. Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](http://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](https://jmotif.github.io/sax-vsm_site/algorithm/sax/).
+As discretization is probably the most used transformation in data mining, SAX has been widely used throughout the field. Find more information about SAX at its authors pages: [SAX overview by Jessica Lin](https://web.archive.org/web/2021/http://cs.gmu.edu/~jessica/sax.htm), [Eamonn Keogh's SAX page](https://www.cs.ucr.edu/~eamonn/SAX.htm), or at [sax-vsm wiki page](https://jmotif.github.io/sax-vsm_site/algorithm/sax/).
 
 1.0 Building
 ------------
