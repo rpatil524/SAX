@@ -85,7 +85,7 @@ public class TSProcessor {
     String line = null;
     while ((line = br.readLine()) != null) {
       String[] split = line.trim().split("\\s+");
-      if (split.length < columnIdx) {
+      if (split.length <= columnIdx) {
         String message = "Unable to read data from column " + columnIdx;
         br.close();
         throw new SAXException(message);
