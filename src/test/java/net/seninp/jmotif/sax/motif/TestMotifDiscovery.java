@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import net.seninp.jmotif.SlowTests;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.util.StackTrace;
 
@@ -18,12 +20,15 @@ public class TestMotifDiscovery {
 
   private static final double ZNORM_THRESHOLD = 0.01;
 
+  /** Prefix length keeps brute-force motif search fast in the default test suite. */
+  private static final int SERIES_PREFIX = 800;
+
   private double[] series;
 
   @Before
   public void setUp() throws Exception {
-    series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
-    // series = Arrays.copyOf(series, 800);
+    double[] full = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
+    series = java.util.Arrays.copyOf(full, Math.min(SERIES_PREFIX, full.length));
   }
 
   @Test
@@ -31,47 +36,17 @@ public class TestMotifDiscovery {
     MotifRecord motifsBF;
     MotifRecord motifsEMMA;
     try {
-
-      // Date start = new Date();
       motifsBF = BruteForceMotifImplementation.series2BruteForceMotifs(series, MOTIF_SIZE,
           MOTIF_RANGE, ZNORM_THRESHOLD);
-      // System.out.println(
-      // "brute force: " + SAXProcessor.timeToString(start.getTime(), new Date().getTime()) + " : "
-      // + motifsBF + ", dist calls: " + BruteForceMotifImplementation.distCounter
-      // + ", early abandoned: " + BruteForceMotifImplementation.eaCounter);
 
-      // start = new Date();
       motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, MOTIF_RANGE, 6, 4,
           ZNORM_THRESHOLD);
-      // System.out.println("emma: " + SAXProcessor.timeToString(start.getTime(), new
-      // Date().getTime())
-      // + " : " + motifsEMMA + ", dist calls: " + EMMAImplementation.distCounter
-      // + ", early abandoned: " + EMMAImplementation.eaCounter);
 
       assertEquals("Asserting motif frequency", motifsBF.getFrequency(), motifsEMMA.getFrequency());
 
       for (Integer m : motifsBF.getOccurrences()) {
-        // System.out.println("asserting at " + m);
         assertTrue("Asserting motif locations", motifsEMMA.getOccurrences().contains(m));
       }
-
-      // for (int i = 0; i < 3; i++) {
-      // long tstamp0 = System.currentTimeMillis();
-      // for (int j = 0; j < 100; j++) {
-      // motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, MOTIF_RANGE, 5, 5,
-      // 0.001);
-      // }
-      // System.out.println("** " + (System.currentTimeMillis() - tstamp0));
-      // }
-      //
-      // for (int i = 0; i < 3; i++) {
-      // long tstamp0 = System.currentTimeMillis();
-      // for (int j = 0; j < 100; j++) {
-      // motifsBF = BruteForceMotifImplementation.series2BruteForceMotifs(series, MOTIF_SIZE,
-      // MOTIF_RANGE, ZNORM_THRESHOLD);
-      // }
-      // System.out.println("* " + (System.currentTimeMillis() - tstamp0));
-      // }
 
     }
     catch (Exception e) {
@@ -81,17 +56,13 @@ public class TestMotifDiscovery {
 
   /**
    * Sweep several motif-size / range / PAA / alphabet combinations and assert
-   * EMMA agrees with the brute-force oracle on every one. The single-config test
-   * above passed even while EMMA had real bugs (an unsound early-stop that
-   * under-reported the motif frequency, and an ADM tie-break that ignored the
-   * paper's lowest-variance rule); those only surfaced away from that config, so
-   * this guards against regressing them. Uses an 800-point prefix to keep the
-   * O(n^2) brute force fast.
+   * EMMA agrees with the brute-force oracle on every one. Excluded from default
+   * {@code mvn test} ({@link SlowTests}); run with {@code mvn test -Pslow-tests}.
    */
   @Test
+  @Category(SlowTests.class)
   public void testEMMAvsBruteForceSweep() {
     try {
-      double[] s = java.util.Arrays.copyOf(series, 800);
       int[] motifSizes = { 60, 100 };
       double[] ranges = { 0.8, 1.5, 2.5, 3.5 };
       int[] paaSizes = { 4, 6 };
@@ -100,9 +71,9 @@ public class TestMotifDiscovery {
         for (double r : ranges) {
           for (int paa : paaSizes) {
             for (int alpha : alphabetSizes) {
-              MotifRecord bf = BruteForceMotifImplementation.series2BruteForceMotifs(s, ms, r,
+              MotifRecord bf = BruteForceMotifImplementation.series2BruteForceMotifs(series, ms, r,
                   ZNORM_THRESHOLD);
-              MotifRecord em = EMMAImplementation.series2EMMAMotifs(s, ms, r, paa, alpha,
+              MotifRecord em = EMMAImplementation.series2EMMAMotifs(series, ms, r, paa, alpha,
                   ZNORM_THRESHOLD);
               String cfg = "ms=" + ms + " r=" + r + " paa=" + paa + " alpha=" + alpha;
               assertEquals("EMMA frequency must match brute force for " + cfg, bf.getFrequency(),

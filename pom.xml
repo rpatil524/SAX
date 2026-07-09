@@ -113,6 +113,7 @@
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <argLine>${argLine} -Xms512m -Xmx1024m</argLine>
+          <excludedGroups>net.seninp.jmotif.SlowTests</excludedGroups>
         </configuration>
       </plugin>
 
@@ -150,6 +151,21 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>slow-tests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven-surefire-plugin.version}</version>
+            <configuration combine.self="override">
+              <argLine>${argLine} -Xms512m -Xmx1024m</argLine>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>CodeCoverage</id>
       <build>
