@@ -1,9 +1,8 @@
 package net.seninp.jmotif.sax.motif;
 
 import java.util.ArrayList;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.distance.EuclideanDistance;
 import net.seninp.jmotif.sax.TSProcessor;
 
@@ -15,15 +14,7 @@ import net.seninp.jmotif.sax.TSProcessor;
  */
 public class BruteForceMotifImplementation {
 
-  // logging stuff
-  //
-  private static final Logger LOGGER;
-  private static final Level LOGGING_LEVEL = Level.INFO;
-
-  static {
-    LOGGER = (Logger) LoggerFactory.getLogger(BruteForceMotifImplementation.class);
-    LOGGER.setLevel(LOGGING_LEVEL);
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(BruteForceMotifImplementation.class);
 
   private static TSProcessor tp = new TSProcessor();
   private static EuclideanDistance ed = new EuclideanDistance();

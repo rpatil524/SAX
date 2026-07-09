@@ -8,9 +8,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
@@ -29,15 +28,7 @@ public class HOTSAXImplementation {
   private static TSProcessor tp = new TSProcessor();
   private static SAXProcessor sp = new SAXProcessor();
 
-  //logging stuff
-  //
-  private static final Logger LOGGER;
-  private static final Level LOGGING_LEVEL = Level.INFO;
-
-  static {
-    LOGGER = (Logger) LoggerFactory.getLogger(HOTSAXImplementation.class);
-    LOGGER.setLevel(LOGGING_LEVEL);
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(HOTSAXImplementation.class);
 
   /**
    * Hash-table backed implementation (in contrast to trie). Time series is converted into a
