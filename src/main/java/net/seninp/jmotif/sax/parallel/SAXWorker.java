@@ -142,8 +142,8 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
       LOGGER.trace(this.id + ", " + String.valueOf(currentString) + ", " + i);
 
       if (Thread.currentThread().isInterrupted()) {
-        LOGGER.info("SAXWorker was interrupted... returning NULL");
-        return null;
+        LOGGER.info("SAXWorker was interrupted");
+        throw new InterruptedException("SAX worker interrupted");
       }
 
     }

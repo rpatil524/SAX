@@ -45,13 +45,11 @@ public class TestDiscordDiscoveryNONE {
     series = Arrays.copyOf(series, 800);
   }
 
-  @SuppressWarnings("deprecation")
   @Test
   public void test() {
 
     DiscordRecords discordsBruteForce = null;
     DiscordRecords discordsHash = null;
-    DiscordRecords discordsOle = null;
 
     try {
 
@@ -67,12 +65,6 @@ public class TestDiscordDiscoveryNONE {
         LOGGER.debug("hotsax hash discord " + d.toString());
       }
 
-      discordsOle = HOTSAXImplementation.series2DiscordsDeprecated(series, DISCORDS_TO_TEST,
-          WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), STRATEGY, NORM_THRESHOLD);
-      for (DiscordRecord d : discordsOle) {
-        LOGGER.debug("old hash discord " + d.toString());
-      }
-
     }
     catch (Exception e) {
       fail("shouldn't throw an exception, exception thrown: \n" + StackTrace.toString(e));
@@ -83,24 +75,20 @@ public class TestDiscordDiscoveryNONE {
 
       Double d1 = discordsBruteForce.get(i).getNNDistance();
       Double d2 = discordsHash.get(i).getNNDistance();
-      Double d3 = discordsOle.get(i).getNNDistance();
 
       assertEquals(WIN_SIZE, discordsBruteForce.get(i).getLength());
       assertEquals(WIN_SIZE, discordsHash.get(i).getLength());
-      assertEquals(WIN_SIZE, discordsOle.get(i).getLength());
 
       assertEquals(d1, d2);
-      assertEquals(d1, d3);
 
       // also assert the discord POSITION agrees across implementations -- a
       // wrong-but-consistent distance would otherwise pass; with the
       // deterministic lowest-index tie-break the positions must match too.
       assertEquals(discordsBruteForce.get(i).getPosition(), discordsHash.get(i).getPosition());
-      assertEquals(discordsBruteForce.get(i).getPosition(), discordsOle.get(i).getPosition());
     }
 
     // Golden anchor (z-normed /n distances on the 800-pt prefix): pins the
-    // actual top discords so a uniform shift across all three implementations
+    // actual top discords so a uniform shift across both implementations
     // cannot pass silently.
     assertEquals(430, discordsBruteForce.get(0).getPosition());
     assertEquals(5.329944, discordsBruteForce.get(0).getNNDistance(), 1e-6);

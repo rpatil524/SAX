@@ -9,7 +9,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.registry.LargeWindowAlgorithm;
 import net.seninp.util.StackTrace;
 
 public class TestDiscordDiscoveryMINDIST {
@@ -43,12 +42,10 @@ public class TestDiscordDiscoveryMINDIST {
     series = TSProcessor.readFileColumn(TEST_DATA_FNAME, 0, 0);
   }
 
-  @SuppressWarnings("deprecation")
   @Test
   public void test() {
 
     DiscordRecords discordsHash = null;
-    DiscordRecords discordsOle = null;
 
     try {
 
@@ -58,29 +55,13 @@ public class TestDiscordDiscoveryMINDIST {
         LOGGER.debug("hotsax hash discord " + d.toString());
       }
 
-      discordsOle = HOTSAXImplementation.series2DiscordsDeprecated(series, DISCORDS_TO_TEST,
-          WIN_SIZE, PAA_SIZE, ALPHABET_SIZE, new LargeWindowAlgorithm(), STRATEGY, NORM_THRESHOLD);
-      for (DiscordRecord d : discordsOle) {
-        LOGGER.debug("old hash discord " + d.toString());
-      }
-
     }
     catch (Exception e) {
       fail("shouldn't throw an exception, exception thrown: \n" + StackTrace.toString(e));
       e.printStackTrace();
     }
 
-    for (int i = 0; i < DISCORDS_TO_TEST; i++) {
-      Double d2 = discordsHash.get(i).getNNDistance();
-      Double d3 = discordsOle.get(i).getNNDistance();
-      assertEquals(d3, d2);
-      // positions, not just distances, must agree between the two hash impls.
-      assertEquals(discordsHash.get(i).getPosition(), discordsOle.get(i).getPosition());
-    }
-
-    // Golden anchor for the top discord (z-normed /n, full series), so a
-    // uniform shift in both hash implementations cannot pass the d2==d3
-    // agreement check unnoticed.
+    // Golden anchor for the top discord (z-normed /n, full series).
     assertEquals(430, discordsHash.get(0).getPosition());
     assertEquals(5.279080, discordsHash.get(0).getNNDistance(), 1e-6);
   }

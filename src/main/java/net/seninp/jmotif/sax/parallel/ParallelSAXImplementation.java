@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,8 @@ public class ParallelSAXImplementation {
   }
 
   /**
-   * Discretizes a time series using N threads. If interrupted returns null.
+   * Discretizes a time series using N threads. Throws {@link SAXException} if a worker is
+   * interrupted, a worker fails, or not all chunk results are collected.
    *
    * @param timeseries the input time series.
    * @param threadsNum the number of threads to allocate for conversion.
@@ -158,49 +160,51 @@ public class ParallelSAXImplementation {
       while (totalTaskCounter > 0) {
 
         if (Thread.currentThread().isInterrupted()) {
-          LOGGER.info("Parallel SAX being interrupted, returning NULL!");
-          return null;
+          LOGGER.info("Parallel SAX being interrupted");
+          executorService.shutdownNow();
+          Thread.currentThread().interrupt();
+          throw new SAXException("Parallel SAX conversion was interrupted");
         }
 
         Future<HashMap<Integer, char[]>> finished = completionService.poll(24, TimeUnit.HOURS);
 
         if (null == finished) {
-          // something went wrong - break from here
-          LOGGER.info("Breaking POLL loop after 24 HOURS of waiting...");
-          break;
+          LOGGER.error("Parallel SAX timed out waiting for worker results");
+          executorService.shutdownNow();
+          throw new SAXException(
+              "Parallel SAX conversion timed out waiting for worker results");
         }
-        else {
 
-          // get the result out
-          //
-          HashMap<Integer, char[]> chunkRes = finished.get();
+        HashMap<Integer, char[]> chunkRes = finished.get();
 
-          LOGGER.debug("job with stamp {} has finished", chunkRes.get(-1));
-
-          // drop the job-id marker entry
-          chunkRes.remove(-1);
-
-          // Workers run with NONE, so chunk results never overlap in window-start index and merge
-          // order is irrelevant -- just collect every chunk's windows. The requested numerosity
-          // reduction is applied once, deterministically, after all chunks are merged.
-          //
-          res.addAll(chunkRes);
+        if (null == chunkRes) {
+          executorService.shutdownNow();
+          throw new SAXException("Parallel SAX worker was interrupted before completing its chunk");
         }
+
+        LOGGER.debug("job with stamp {} has finished", chunkRes.get(-1));
+
+        chunkRes.remove(-1);
+
+        res.addAll(chunkRes);
         totalTaskCounter--;
       }
     }
     catch (InterruptedException e) {
       LOGGER.error("Error while waiting results.", e);
-      this.cancel();
+      executorService.shutdownNow();
+      Thread.currentThread().interrupt();
+      throw new SAXException("Parallel SAX conversion was interrupted", e);
     }
-    catch (Exception e) {
-      LOGGER.error("Error while waiting results.", e);
+    catch (ExecutionException e) {
+      LOGGER.error("Parallel SAX worker failed.", e);
+      executorService.shutdownNow();
+      throw new SAXException("Parallel SAX worker failed", e.getCause());
     }
     finally {
-      // wait at least 1 more hour before terminate and fail
       try {
         if (!executorService.awaitTermination(1, TimeUnit.HOURS)) {
-          executorService.shutdownNow(); // Cancel currently executing tasks
+          executorService.shutdownNow();
           if (!executorService.awaitTermination(30, TimeUnit.MINUTES)) {
             System.err.println("Pool did not terminate... FATAL ERROR");
             throw new RuntimeException("Parallel SAX pool did not terminate... FATAL ERROR");
@@ -209,12 +213,9 @@ public class ParallelSAXImplementation {
       }
       catch (InterruptedException ie) {
         LOGGER.error("Error while waiting interrupting.", ie);
-        // (Re-)Cancel if current thread also interrupted
         executorService.shutdownNow();
-        // Preserve interrupt status
         Thread.currentThread().interrupt();
       }
-
     }
 
     // Apply the requested numerosity reduction as a single deterministic post-pass over the
