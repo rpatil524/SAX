@@ -1,9 +1,9 @@
 Time series symbolic discretization (approximation) with SAX
 ====
 ![maven build](https://github.com/jMotif/SAX/actions/workflows/maven.yml/badge.svg) 
-[![codecov.io](http://codecov.io/github/jMotif/SAX/coverage.svg?branch=master)](http://codecov.io/github/jMotif/SAX?branch=master) 
+[![codecov.io](https://codecov.io/github/jMotif/SAX/coverage.svg?branch=master)](https://codecov.io/github/jMotif/SAX?branch=master) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax)
-[![License](http://img.shields.io/:license-gpl2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![License](https://img.shields.io/:license-gpl2-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/new_code?id=jMotif_SAX)
 
@@ -14,7 +14,7 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
   * time series bitmap-related routines [4]
   
 
-##### Note that the most of library's functionality is also available in [R](https://github.com/jMotif/jmotif-R) and [Python](https://github.com/seninp/saxpy) as well...
+##### Note that most of the library's functionality is also available in [R](https://github.com/jMotif/jmotif-R) and [Python](https://github.com/seninp/saxpy) as well...
 
 ##### Cross-implementation alignment
 
@@ -29,6 +29,8 @@ the symbol **above** the cut; and discord search compares **z-normalized**
 subsequences and breaks distance ties by the lowest index for reproducibility.
 The 2.0.0 discord/z-normalization fixes mean SAX words and discord positions
 near a breakpoint may differ from earlier releases (see the version notes).
+Automated cross-language verification lives in
+[jmotif-conformance](https://github.com/jMotif/jmotif-conformance).
 
 
 [1] Lin, J., Keogh, E., Patel, P., and Lonardi, S., 
@@ -48,12 +50,12 @@ In Proc. ICDM (2005)
 
 #### Citing this work:
 
-If you are using this implementation for you academic work, please cite our [Grammarviz 3.0 paper](https://dl.acm.org/citation.cfm?id=3051126&dl=ACM&coll=DL):
+If you are using this implementation for your academic work, please cite our [Grammarviz 3.0 paper](https://dl.acm.org/citation.cfm?id=3051126&dl=ACM&coll=DL):
 
 [[Citation]](https://raw.githubusercontent.com/jMotif/SAX/master/citation.bib) Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S.,  [*GrammarViz 3.0: Interactive Discovery of Variable-Length Time Series Patterns*](https://github.com/csdl/techreports/blob/master/techreports/2017/17-04/17-04.pdf), ACM Trans. Knowl. Discov. Data, February 2018.
 
-#### an alternative solution for recurrent and anomalous patterns detection:
-If you are interested in more advance techniques for time series pattern discovery -- the one which allows to discover recurrent and anomalous patterns of *variable length* -- please check out our new tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html). Based on symbolic discretization, Grammatical Inference, and algorithmic (i.e., Kolmogorv complexity) this new approach facilitates linear-time variable length motifs discovery and orders of magnitude faster than HOT-SAX discords discovery (but exactness is not guaranteed).
+#### An alternative solution for recurrent and anomalous patterns detection:
+If you are interested in more advanced techniques for time series pattern discovery -- the kind that discovers recurrent and anomalous patterns of *variable length* -- please check out our tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html). Based on symbolic discretization, Grammatical Inference, and algorithmic (i.e., Kolmogorov complexity) complexity, this approach facilitates linear-time variable-length motif discovery and discord discovery that is orders of magnitude faster than HOT-SAX (but exactness is not guaranteed).
 
 0.0 SAX transform in a nutshell
 ------------
@@ -76,7 +78,7 @@ The code is written in Java and I use maven to build it. Use the profile `single
 	
 	...
 	
-	[INFO] Building jar: /media/Stock/git/jmotif-sax/target/jmotif-sax-2.0.0-jar-with-dependencies.jar
+	[INFO] Building jar: target/jmotif-sax-2.0.0-jar-with-dependencies.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
 
@@ -118,7 +120,7 @@ When run, it prints the time series point index and a corresponding word:
 
 3.0 API usage
 ------------	
-There two classes implementing end-to-end workflow for SAX. These are [TSProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/TSProcessor.java) (implements time series-related functions) and [SAXProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/SAXProcessor.java) (implements the discretization). Below are typical use scenarios:
+There are two classes implementing end-to-end workflow for SAX. These are [TSProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/TSProcessor.java) (implements time series-related functions) and [SAXProcessor](https://github.com/jMotif/SAX/blob/master/src/main/java/net/seninp/jmotif/sax/SAXProcessor.java) (implements the discretization). Below are typical use scenarios:
 
 #### 3.1 Discretizing time-series *by chunking*:
 
@@ -231,7 +233,7 @@ The [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/ja
         System.out.println("hotsax hash discord " + d.toString());
       }
 
-Note, that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrategy.NONE` but you may try others in order to speed-up the search, exactness however, is not guaranteed.
+Note that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrategy.NONE` but you may try others in order to speed-up the search; exactness, however, is not guaranteed.
 
 The library source code has examples (tests) for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java).
 	
@@ -240,11 +242,11 @@ The library source code has examples (tests) for using these [here](https://gith
 The library also implements simple routines to convert a time series to bitmap following [4]. Here is an example of six datasets from the paper:
 ![Six "normal" datasets](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets.png)
 
-which were converted into the digram frequencies tables and colored with Jet palette:
+which were converted into the bigram frequencies tables and colored with Jet palette:
 
 ![Six "normal" datasets as bitmaps](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets_bitmap.png)
 
-and then clustered (`hc`, `ave`) based on the digram occurrence frequencies (`euclidean`):
+and then clustered (`hc`, `ave`) based on the bigram occurrence frequencies (`euclidean`):
 
 ![Six "normal" datasets clustered via bitmap](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/bitmap/normal_datasets_clustering.png)
 
@@ -252,7 +254,7 @@ and then clustered (`hc`, `ave`) based on the digram occurrence frequencies (`eu
 ------------	
 The plot shows the speedup achieved when using the parallelized SAX version on the dataset [`300_signal1.txt`](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/test-data/300_signal1.txt) of length 536,976 points. Parameters used in the experiment: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
 
-Note, that for MINDIST numerosity reduction strategy the parallelized code performs NONE-based discretization first and prunes the result second. The difference in performance for 7+ CPUs on the plot below is due to the uneven server load, I guess.
+Note that for MINDIST numerosity reduction strategy the parallelized code performs NONE-based discretization first and prunes the result second. The difference in performance for 7+ CPUs on the plot below is due to the uneven server load, I guess.
 
 ![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/src/RCode/performance/profiling.png)
 
@@ -261,14 +263,14 @@ Note, that for MINDIST numerosity reduction strategy the parallelized code perfo
 
 #### Versions:
 `2.0.0` 
-  * **the build now targets Java 21** (was Java 8); consumers need a JDK 21 or newer. Plugins refreshed (compiler 3.13, surefire 3.2.5, JaCoCo 0.8.13) and the CI/publish workflows updated to a 21/25 matrix
+  * **the build now targets Java 21** (was Java 8); consumers need a JDK 21 or newer. Plugins refreshed (compiler 3.13, surefire 3.2.5, JaCoCo 0.8.15) and the CI/publish workflows updated to a 21/25 matrix
   * z-normalization aligned to the *population* standard deviation (divide by `n`), matching the saxpy reference; SAX words for values close to a Gaussian breakpoint may differ from earlier releases
   * HOT-SAX and brute-force discord search now compute distances on z-normalized subsequences, break ties by the lowest index, and exclude the trivial-match neighborhood of `±(windowSize - 1)`; reported discord positions/distances may differ from earlier releases
   * EMMA correctness fixes -- removed an unsound early-stop and added deterministic tie-breaking
   * parallel SAX: fixed an order-dependent seam merge and a single-thread crash; the result now matches the single-threaded conversion exactly
 
 `1.1.4` 
-  * fixing EMMA for a case of "tie" -- chosing a motif with the smallest variance
+  * fixing EMMA for a case of "tie" -- choosing a motif with the smallest variance
   
 `1.1.3` 
   * adding an EMMA implementation with a *fake* ADM
