@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -209,6 +210,9 @@ public class ParallelSAXImplementation {
       }
 
       return res;
+    }
+    catch (CancellationException e) {
+      throw new SAXException("Parallel SAX conversion was interrupted", e);
     }
     catch (InterruptedException e) {
       LOGGER.error("Error while waiting results.", e);

@@ -10,9 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecord;
@@ -48,15 +47,7 @@ public class TestSAXProcessor {
 
   private static final double delta = 0.001;
 
-  // logging stuff
-  //
-  private static final Logger LOGGER;
-  private static final Level LOGGING_LEVEL = Level.INFO;
-
-  static {
-    LOGGER = (Logger) LoggerFactory.getLogger(TestSAXProcessor.class);
-    LOGGER.setLevel(LOGGING_LEVEL);
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(TestSAXProcessor.class);
 
   /**
    * Testing the concatenated time series SAX conversion.
