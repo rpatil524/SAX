@@ -3,6 +3,8 @@ package net.seninp.jmotif.sax.parallel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -21,14 +23,24 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
 /**
  * Implements a parallel SAX factory class.
  *
+ * <p>A single instance reuses one fixed-size {@link ExecutorService} across {@link #process}
+ * invocations when the requested thread count is unchanged. Call {@link #shutdown()} when the
+ * instance will not be used again. {@link #process} is not safe for concurrent use on the same
+ * instance.
+ *
  * @author psenin
  */
 public class ParallelSAXImplementation {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParallelSAXImplementation.class);
 
-  /** Set only while a parallel {@link #process} run is in flight; cleared on exit. */
-  private volatile ExecutorService executorService;
+  private final Object poolLock = new Object();
+
+  private ExecutorService threadPool;
+  private int poolThreadCount;
+
+  /** Tracks the chunk tasks for the {@link #process} run currently in flight, if any. */
+  private volatile ActiveRun activeRun;
 
   /**
    * Constructor.
@@ -83,9 +95,9 @@ public class ParallelSAXImplementation {
     //
     NumerosityReductionStrategy nrStrategy = NumerosityReductionStrategy.NONE;
 
-    ExecutorService pool = Executors.newFixedThreadPool(threadsNum);
-    executorService = pool;
-    LOGGER.debug("Created thread pool of {} threads", threadsNum);
+    ExecutorService pool = acquirePool(threadsNum);
+    ActiveRun run = new ActiveRun();
+    activeRun = run;
 
     try {
       SAXRecords res = new SAXRecords(0);
@@ -106,7 +118,7 @@ public class ParallelSAXImplementation {
         final SAXWorker job0 = new SAXWorker(tstamp + totalTaskCounter, timeseries, firstChunkStart,
             firstChunkEnd, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
             normalizationThreshold);
-        completionService.submit(job0);
+        run.track(completionService.submit(job0));
         LOGGER.debug("submitted first chunk job {}", tstamp);
         totalTaskCounter++;
       }
@@ -119,7 +131,7 @@ public class ParallelSAXImplementation {
         final SAXWorker job = new SAXWorker(tstamp + totalTaskCounter, timeseries,
             intermediateChunkStart, intermediateChunkEnd, slidingWindowSize, paaSize, alphabetSize,
             nrStrategy, normalizationThreshold);
-        completionService.submit(job);
+        run.track(completionService.submit(job));
         LOGGER.debug("submitted intermediate chunk job {}", (tstamp + totalTaskCounter));
         totalTaskCounter++;
       }
@@ -130,18 +142,16 @@ public class ParallelSAXImplementation {
         final SAXWorker jobN = new SAXWorker(tstamp + totalTaskCounter, timeseries, lastChunkStart,
             lastChunkEnd, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
             normalizationThreshold);
-        completionService.submit(jobN);
+        run.track(completionService.submit(jobN));
         LOGGER.debug("submitted last chunk job {}", (tstamp + totalTaskCounter));
         totalTaskCounter++;
       }
 
-      pool.shutdown();
-
       while (totalTaskCounter > 0) {
 
-        if (Thread.currentThread().isInterrupted()) {
+        if (run.isCancelled() || Thread.currentThread().isInterrupted()) {
           LOGGER.info("Parallel SAX being interrupted");
-          pool.shutdownNow();
+          run.cancelTasks();
           Thread.currentThread().interrupt();
           throw new SAXException("Parallel SAX conversion was interrupted");
         }
@@ -150,7 +160,7 @@ public class ParallelSAXImplementation {
 
         if (null == finished) {
           LOGGER.error("Parallel SAX timed out waiting for worker results");
-          pool.shutdownNow();
+          run.cancelTasks();
           throw new SAXException(
               "Parallel SAX conversion timed out waiting for worker results");
         }
@@ -158,7 +168,7 @@ public class ParallelSAXImplementation {
         HashMap<Integer, char[]> chunkRes = finished.get();
 
         if (null == chunkRes) {
-          pool.shutdownNow();
+          run.cancelTasks();
           throw new SAXException("Parallel SAX worker was interrupted before completing its chunk");
         }
 
@@ -202,33 +212,64 @@ public class ParallelSAXImplementation {
     }
     catch (InterruptedException e) {
       LOGGER.error("Error while waiting results.", e);
-      pool.shutdownNow();
+      run.cancelTasks();
       Thread.currentThread().interrupt();
       throw new SAXException("Parallel SAX conversion was interrupted", e);
     }
     catch (ExecutionException e) {
       LOGGER.error("Parallel SAX worker failed.", e);
-      pool.shutdownNow();
+      run.cancelTasks();
       throw new SAXException("Parallel SAX worker failed", e.getCause());
     }
     finally {
-      awaitPoolTermination(pool);
-      executorService = null;
+      activeRun = null;
     }
   }
 
   /**
-   * Cancels an in-flight {@link #process} run by shutting down the active worker pool. Safe to call
-   * when no run is active (no-op).
+   * Cancels an in-flight {@link #process} run by interrupting its chunk tasks. Safe to call when no
+   * run is active (no-op). Does not shut down the reusable worker pool.
    */
   public void cancel() {
-    ExecutorService pool = executorService;
-    if (pool == null || pool.isShutdown()) {
+    ActiveRun run = activeRun;
+    if (run == null) {
       return;
     }
     LOGGER.info("Parallel SAX cancel requested");
-    pool.shutdownNow();
-    awaitPoolTermination(pool);
+    run.cancelTasks();
+  }
+
+  /**
+   * Shuts down the reusable worker pool. Call when this instance will not be used again. Cancels any
+   * in-flight {@link #process} run first.
+   */
+  public void shutdown() {
+    cancel();
+    synchronized (poolLock) {
+      if (threadPool != null) {
+        threadPool.shutdownNow();
+        awaitPoolTermination(threadPool);
+        threadPool = null;
+        poolThreadCount = 0;
+      }
+    }
+  }
+
+  private ExecutorService acquirePool(int threadsNum) {
+    synchronized (poolLock) {
+      if (threadPool != null && !threadPool.isShutdown() && poolThreadCount == threadsNum) {
+        LOGGER.debug("Reusing thread pool of {} threads", threadsNum);
+        return threadPool;
+      }
+      if (threadPool != null) {
+        threadPool.shutdownNow();
+        awaitPoolTermination(threadPool);
+      }
+      threadPool = Executors.newFixedThreadPool(threadsNum);
+      poolThreadCount = threadsNum;
+      LOGGER.debug("Created thread pool of {} threads", threadsNum);
+      return threadPool;
+    }
   }
 
   private static void awaitPoolTermination(ExecutorService pool) {
@@ -246,6 +287,26 @@ public class ParallelSAXImplementation {
     catch (InterruptedException ie) {
       pool.shutdownNow();
       Thread.currentThread().interrupt();
+    }
+  }
+
+  private static final class ActiveRun {
+    private final List<Future<HashMap<Integer, char[]>>> futures = new CopyOnWriteArrayList<>();
+    private volatile boolean cancelled;
+
+    void track(Future<HashMap<Integer, char[]>> future) {
+      futures.add(future);
+    }
+
+    boolean isCancelled() {
+      return cancelled;
+    }
+
+    void cancelTasks() {
+      cancelled = true;
+      for (Future<HashMap<Integer, char[]>> future : futures) {
+        future.cancel(true);
+      }
     }
   }
 }

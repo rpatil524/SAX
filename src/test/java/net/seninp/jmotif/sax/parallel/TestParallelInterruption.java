@@ -38,6 +38,9 @@ public class TestParallelInterruption {
     catch (Exception e) {
       fail("Shouldn't throw any exception");
     }
+    finally {
+      ps.shutdown();
+    }
   }
 
 }
