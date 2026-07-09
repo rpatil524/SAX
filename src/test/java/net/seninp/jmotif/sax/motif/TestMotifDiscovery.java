@@ -33,8 +33,6 @@ public class TestMotifDiscovery {
     try {
 
       // Date start = new Date();
-      BruteForceMotifImplementation.distCounter = 0;
-      BruteForceMotifImplementation.eaCounter = 0;
       motifsBF = BruteForceMotifImplementation.series2BruteForceMotifs(series, MOTIF_SIZE,
           MOTIF_RANGE, ZNORM_THRESHOLD);
       // System.out.println(
@@ -43,8 +41,6 @@ public class TestMotifDiscovery {
       // + ", early abandoned: " + BruteForceMotifImplementation.eaCounter);
 
       // start = new Date();
-      EMMAImplementation.distCounter = 0;
-      EMMAImplementation.eaCounter = 0;
       motifsEMMA = EMMAImplementation.series2EMMAMotifs(series, MOTIF_SIZE, MOTIF_RANGE, 6, 4,
           ZNORM_THRESHOLD);
       // System.out.println("emma: " + SAXProcessor.timeToString(start.getTime(), new

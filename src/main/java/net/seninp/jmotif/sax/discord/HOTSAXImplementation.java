@@ -356,10 +356,10 @@ public class HOTSAXImplementation {
         if (nearestNeighborDist < Double.MAX_VALUE
             && (nearestNeighborDist > bestSoFarDistance
                 || (nearestNeighborDist == bestSoFarDistance && currentPos < bestSoFarPosition))) {
-          LOGGER.debug("discord updated: pos {}, dist {}", currentPos, bestSoFarDistance);
           bestSoFarDistance = nearestNeighborDist;
           bestSoFarPosition = currentPos;
           bestSoFarWord = currentWord;
+          LOGGER.debug("discord updated: pos {}, dist {}", bestSoFarPosition, bestSoFarDistance);
         }
 
         LOGGER.trace(" . . iterated {} times, best distance:  {} for a string {} at {}",

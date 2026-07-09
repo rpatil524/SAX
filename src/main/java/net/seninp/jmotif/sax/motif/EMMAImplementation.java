@@ -30,9 +30,6 @@ public class EMMAImplementation {
 
   private static EuclideanDistance ed = new EuclideanDistance();
 
-  public static int eaCounter;
-  public static int distCounter;
-
   /**
    * Finds 1-Motif
    * 
@@ -309,8 +306,6 @@ public class EMMAImplementation {
   private static Double eaDistance(double[] series, int a, int b, Integer motifSize, double range,
       double znormThreshold) {
 
-    distCounter++;
-
     double cutOff2 = range * range;
 
     double[] seriesA = tp.znorm(tp.subseriesByCopy(series, a, a + motifSize), znormThreshold);
@@ -320,7 +315,6 @@ public class EMMAImplementation {
     for (int i = 0; i < motifSize; i++) {
       res = res + distance2(seriesA[i], seriesB[i]);
       if (res > cutOff2) {
-        eaCounter++;
         return Double.NaN;
       }
     }

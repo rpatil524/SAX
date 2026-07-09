@@ -489,7 +489,13 @@ public class TSProcessor {
    */
   public double[] normOne(double[] data) {
     double[] res = new double[data.length];
+    if (data.length == 0) {
+      return res;
+    }
     double max = max(data);
+    if (max <= 0) {
+      return res;
+    }
     for (int i = 0; i < data.length; i++) {
       res[i] = data[i] / max;
     }
