@@ -1,11 +1,9 @@
 Time series symbolic discretization (approximation) with SAX
 ====
-![maven build](https://github.com/jMotif/SAX/actions/workflows/maven.yml/badge.svg) 
-[![codecov.io](https://codecov.io/github/jMotif/SAX/coverage.svg?branch=master)](https://codecov.io/github/jMotif/SAX?branch=master) 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-sax)
-[![License](https://img.shields.io/:license-gpl2-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/new_code?id=jMotif_SAX)
+[![build](https://github.com/jMotif/SAX/actions/workflows/maven.yml/badge.svg)](https://github.com/jMotif/SAX/actions/workflows/maven.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/net.seninp/jmotif-sax)](https://central.sonatype.com/artifact/net.seninp/jmotif-sax)
+[![coverage](https://codecov.io/github/jMotif/SAX/graph/badge.svg?branch=master)](https://codecov.io/github/jMotif/SAX?branch=master)
+[![License](https://img.shields.io/github/license/jMotif/SAX)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) and implements in Java:
   * Symbolic Aggregate approXimation (i.e., SAX) toolkit stack [1]
