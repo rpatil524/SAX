@@ -14,7 +14,7 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
   * time series bitmap-related routines [4]
   
 
-##### Note that most of the library's functionality is also available in [R](https://github.com/jMotif/jmotif-R) and [Python](https://github.com/seninp/saxpy) as well...
+##### Note that most of the library's functionality is also available in [R](https://github.com/jMotif/jmotif-R), [Python (saxpy)](https://github.com/seninp/saxpy), [SAX-VSM](https://jmotif.github.io/sax-vsm_site/), and [GrammarViz 3.0](https://grammarviz2.github.io/grammarviz2_site/) as well...
 
 ##### Cross-implementation alignment
 
@@ -55,7 +55,7 @@ If you are using this implementation for your academic work, please cite our [Gr
 [[Citation]](https://raw.githubusercontent.com/jMotif/SAX/master/citation.bib) Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S.,  [*GrammarViz 3.0: Interactive Discovery of Variable-Length Time Series Patterns*](https://github.com/csdl/techreports/blob/master/techreports/2017/17-04/17-04.pdf), ACM Trans. Knowl. Discov. Data, February 2018.
 
 #### An alternative solution for recurrent and anomalous patterns detection:
-If you are interested in more advanced techniques for time series pattern discovery -- the kind that discovers recurrent and anomalous patterns of *variable length* -- please check out our tool called [GrammarViz 2.0](http://grammarviz2.github.io/grammarviz2_site/index.html). Based on symbolic discretization, Grammatical Inference, and algorithmic (i.e., Kolmogorov complexity) complexity, this approach facilitates linear-time variable-length motif discovery and discord discovery that is orders of magnitude faster than HOT-SAX (but exactness is not guaranteed).
+If you are interested in more advanced techniques for time series pattern discovery -- the kind that discovers recurrent and anomalous patterns of *variable length* -- see [GrammarViz 3.0](https://grammarviz2.github.io/grammarviz2_site/) ([TKDD 2018 paper](https://doi.org/10.1145/3051126), [source](https://github.com/GrammarViz2/grammarviz2_src)). Based on symbolic discretization, grammatical inference, and algorithmic (Kolmogorov) complexity, it finds variable-length motifs and anomalies in roughly linear time — faster than HOT-SAX on many series, though exactness is not guaranteed.
 
 0.0 SAX transform in a nutshell
 ------------
