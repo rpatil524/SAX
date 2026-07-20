@@ -415,7 +415,7 @@ public final class SAXProcessor {
 
       double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
 
-      if (tsProcessor.stDev(subseries) > normThreshold) {
+      if (tsProcessor.stDev(subseries) >= normThreshold) {
         subseries = tsProcessor.znorm(subseries, normThreshold);
       }
 
@@ -433,7 +433,7 @@ public final class SAXProcessor {
         if (paaIdx < 0) {
           paaIdx = 0;
         }
-        if (paaIdx > paa.length) {
+        if (paaIdx >= paa.length) {
           paaIdx = paa.length - 1;
         }
 
@@ -470,7 +470,7 @@ public final class SAXProcessor {
       double[] subseries = Arrays.copyOfRange(ts, i, i + winSize);
       double subsequenceDistance = 0.;
 
-      if (tsProcessor.stDev(subseries) > normThreshold) {
+      if (tsProcessor.stDev(subseries) >= normThreshold) {
         subseries = tsProcessor.znorm(subseries, normThreshold);
       }
 

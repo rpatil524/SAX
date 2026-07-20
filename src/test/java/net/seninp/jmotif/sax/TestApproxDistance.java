@@ -13,10 +13,12 @@ public class TestApproxDistance {
       14., 15., 16. };
 
   private SAXProcessor sp;
+  private TSProcessor tsp;
 
   @Before
   public void setUp() throws Exception {
     sp = new SAXProcessor();
+    tsp = new TSProcessor();
   }
 
   @Test
@@ -44,6 +46,27 @@ public class TestApproxDistance {
     catch (Exception e) {
       fail("exception shall not be thrown!");
     }
+  }
+
+  /**
+   * When stDev equals the z-norm threshold, znorm() normalizes; approximation
+   * distance must apply the same rule (not skip normalization with {@code >}).
+   */
+  @Test
+  public void testZnormThresholdBoundaryConsistency() throws Exception {
+    double[] boundarySeries = { 0.0, 1.0 };
+    double threshold = 0.5;
+
+    assertEquals("population stDev at boundary", threshold, tsp.stDev(boundarySeries), 1e-12);
+    assertEquals("znorm at boundary", -1.0, tsp.znorm(boundarySeries, threshold)[0], 1e-12);
+    assertEquals("znorm at boundary", 1.0, tsp.znorm(boundarySeries, threshold)[1], 1e-12);
+
+    // winSize=2, paaSize=1: z-normalized PAA mean is 0 vs raw 0.5 → distances 1.0 vs 0.5
+    assertEquals("approx distance PAA at znorm threshold boundary", 1.0,
+        sp.approximationDistancePAA(boundarySeries, 2, 1, threshold), 1e-12);
+
+    assertEquals("approx distance alphabet at znorm threshold boundary", 0.03257843389829895,
+        sp.approximationDistanceAlphabet(boundarySeries, 2, 2, 3, threshold), 1e-12);
   }
 
 }
