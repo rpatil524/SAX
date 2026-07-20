@@ -209,7 +209,6 @@ public class HOTSAXImplementation {
     int iterationCounter = 0;
     int distanceCalls = 0;
 
-    // System.err.println(frequencies.size() + " left to iterate over");
     LOGGER.debug("iterating over {} entries", allWords.size());
 
     for (MagicArrayEntry currentEntry : allWords) {

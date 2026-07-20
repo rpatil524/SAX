@@ -141,7 +141,6 @@ public class SAXWorker implements Callable<HashMap<Integer, char[]>> {
 
     }
 
-    // System.out.println(this.id + "@" + res.getSAXString(" "));
     return res;
 
   }
