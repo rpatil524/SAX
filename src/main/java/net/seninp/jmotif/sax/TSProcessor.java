@@ -183,7 +183,7 @@ public class TSProcessor {
 
     }
     if (count > 0) {
-      return res / ((Integer) count).doubleValue();
+      return res / (double) count;
     }
     return Double.NaN;
   }
@@ -203,7 +203,7 @@ public class TSProcessor {
 
     }
     if (count > 0) {
-      return res / ((Integer) count).doubleValue();
+      return res / (double) count;
     }
     return Double.NaN;
   }
@@ -244,7 +244,7 @@ public class TSProcessor {
       count += 1;
     }
     if (count > 0) {
-      return res / ((Integer) (count - 1)).doubleValue();
+      return res / (double) (count - 1);
     }
     return Double.NaN;
   }
@@ -264,7 +264,7 @@ public class TSProcessor {
       sum = sum + tp;
       count += 1;
     }
-    double len = ((Integer) count).doubleValue();
+    double len = (double) count;
     // Population standard deviation (divide by n, not n-1). Matches the Matrix
     // Profile / MASS convention and the saxpy reference, and makes each
     // normalized window have empirical variance exactly 1 -- the assumption
