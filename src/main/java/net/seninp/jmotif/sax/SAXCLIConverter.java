@@ -91,8 +91,13 @@ public final class SAXCLIConverter {
 
         if (threadsNum > 1) {
           ParallelSAXImplementation ps = new ParallelSAXImplementation();
-          res = ps.process(ts, threadsNum, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
-              nThreshold);
+          try {
+            res = ps.process(ts, threadsNum, slidingWindowSize, paaSize, alphabetSize, nrStrategy,
+                nThreshold);
+          }
+          finally {
+            ps.shutdown();
+          }
         }
         else {
           res = sp.ts2saxViaWindow(ts, slidingWindowSize, paaSize, na.getCuts(alphabetSize),
@@ -103,11 +108,12 @@ public final class SAXCLIConverter {
         indexes.addAll(res.getIndexes());
         Collections.sort(indexes);
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(SAXCLIParameters.OUT_FILE)));
-        for (Integer idx : indexes) {
-          bw.write(idx + COMMA + String.valueOf(res.getByIndex(idx).getPayload()) + CR);
+        try (BufferedWriter bw = new BufferedWriter(
+            new FileWriter(new File(SAXCLIParameters.OUT_FILE)))) {
+          for (Integer idx : indexes) {
+            bw.write(idx + COMMA + String.valueOf(res.getByIndex(idx).getPayload()) + CR);
+          }
         }
-        bw.close();
 
       }
     }

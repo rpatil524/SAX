@@ -37,33 +37,32 @@ public class UCRUtils {
 
     Map<String, List<double[]>> res = new HashMap<String, List<double[]>>();
 
-    BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
-    String line = "";
-    while ((line = br.readLine()) != null) {
-      if (line.trim().length() == 0) {
-        continue;
-      }
-      String[] split = line.trim().split("[\\,\\s]+");
+    try (BufferedReader br = new BufferedReader(new FileReader(new File(fileName)))) {
+      String line = "";
+      while ((line = br.readLine()) != null) {
+        if (line.trim().length() == 0) {
+          continue;
+        }
+        String[] split = line.trim().split("[\\,\\s]+");
 
-      String label = split[0];
-      Double num = parseValue(label);
-      String seriesType = label;
-      if (!(Double.isNaN(num))) {
-        seriesType = String.valueOf(num.intValue());
-      }
-      double[] series = new double[split.length - 1];
-      for (int i = 1; i < split.length; i++) {
-        series[i - 1] = Double.valueOf(split[i].trim()).doubleValue();
-      }
+        String label = split[0];
+        Double num = parseValue(label);
+        String seriesType = label;
+        if (!(Double.isNaN(num))) {
+          seriesType = String.valueOf(num.intValue());
+        }
+        double[] series = new double[split.length - 1];
+        for (int i = 1; i < split.length; i++) {
+          series[i - 1] = Double.valueOf(split[i].trim()).doubleValue();
+        }
 
-      if (!res.containsKey(seriesType)) {
-        res.put(seriesType, new ArrayList<double[]>());
-      }
+        if (!res.containsKey(seriesType)) {
+          res.put(seriesType, new ArrayList<double[]>());
+        }
 
-      res.get(seriesType).add(series);
+        res.get(seriesType).add(series);
+      }
     }
-
-    br.close();
     return res;
 
   }
@@ -132,17 +131,15 @@ public class UCRUtils {
    */
   public static void saveData(Map<String, List<double[]>> data, File file) throws IOException {
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-
-    for (Entry<String, List<double[]>> classEntry : data.entrySet()) {
-      String classLabel = classEntry.getKey();
-      for (double[] arr : classEntry.getValue()) {
-        String arrStr = Arrays.toString(arr).replaceAll("[\\]\\[\\s]+", "");
-        bw.write(classLabel + "," + arrStr + CR);
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+      for (Entry<String, List<double[]>> classEntry : data.entrySet()) {
+        String classLabel = classEntry.getKey();
+        for (double[] arr : classEntry.getValue()) {
+          String arrStr = Arrays.toString(arr).replaceAll("[\\]\\[\\s]+", "");
+          bw.write(classLabel + "," + arrStr + CR);
+        }
       }
     }
-
-    bw.close();
   }
 
 }

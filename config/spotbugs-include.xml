@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs gate for the jMotif stack. Only the correctness and
+  multithreading-correctness bug categories are reported/gated; the noisier
+  MALICIOUS_CODE (EI_EXPOSE_REP), STYLE, PERFORMANCE and I18N categories are
+  intentionally left out so the gate blocks only on likely real bugs.
+-->
+<FindBugsFilter>
+  <Match>
+    <Bug category="CORRECTNESS"/>
+  </Match>
+  <Match>
+    <Bug category="MT_CORRECTNESS"/>
+  </Match>
+</FindBugsFilter>

@@ -144,18 +144,19 @@ public class UCRdataBitmapPrinter {
         shinglesStr.append(QUOTE).append(shingle).append(QUOTE).append(COMMA);
       }
 
-      BufferedWriter bw = new BufferedWriter(new FileWriter(new File(BitmapParameters.OUT_FILE)));
-      bw.write("\'class_label\',"
-          + shinglesStr.delete(shinglesStr.length() - 1, shinglesStr.length()).toString());
-      bw.write(CR);
-      for (Entry<String, List<Integer[]>> e : res.entrySet()) {
-        String classLabel = e.getKey();
-        for (Integer[] arr : e.getValue()) {
-          String str = Arrays.toString(arr).replaceAll("[\\[\\]\\s]", "");
-          bw.write("\'" + classLabel + "\'" + COMMA + str + CR);
+      try (BufferedWriter bw = new BufferedWriter(
+          new FileWriter(new File(BitmapParameters.OUT_FILE)))) {
+        bw.write("\'class_label\',"
+            + shinglesStr.delete(shinglesStr.length() - 1, shinglesStr.length()).toString());
+        bw.write(CR);
+        for (Entry<String, List<Integer[]>> e : res.entrySet()) {
+          String classLabel = e.getKey();
+          for (Integer[] arr : e.getValue()) {
+            String str = Arrays.toString(arr).replaceAll("[\\[\\]\\s]", "");
+            bw.write("\'" + classLabel + "\'" + COMMA + str + CR);
+          }
         }
       }
-      bw.close();
 
       LOGGER.info("done!");
 

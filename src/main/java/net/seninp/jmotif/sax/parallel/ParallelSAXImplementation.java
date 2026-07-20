@@ -96,7 +96,7 @@ public class ParallelSAXImplementation {
     //
     NumerosityReductionStrategy nrStrategy = NumerosityReductionStrategy.NONE;
 
-    ExecutorService pool = acquirePool(threadsNum);
+    ExecutorService pool = acquirePool(threadsNum); // NOPMD - reused instance pool; shutdown via shutdown()
     ActiveRun run = new ActiveRun();
     activeRun = run;
 

@@ -107,12 +107,13 @@ public class TSBitmapPrinter {
         freqs.append(shingledData.get(shingle)).append(COMMA);
       }
 
-      BufferedWriter bw = new BufferedWriter(new FileWriter(new File(BitmapParameters.OUT_FILE)));
-      bw.write(shingles.delete(shingles.length() - 1, shingles.length()).toString());
-      bw.write(CR);
-      bw.write(freqs.delete(freqs.length() - 1, freqs.length()).toString());
-      bw.write(CR);
-      bw.close();
+      try (BufferedWriter bw = new BufferedWriter(
+          new FileWriter(new File(BitmapParameters.OUT_FILE)))) {
+        bw.write(shingles.delete(shingles.length() - 1, shingles.length()).toString());
+        bw.write(CR);
+        bw.write(freqs.delete(freqs.length() - 1, freqs.length()).toString());
+        bw.write(CR);
+      }
 
       if (null == BitmapParameters.BITMAP_FILE) {
         System.exit(10);

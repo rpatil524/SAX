@@ -37,12 +37,12 @@ public class PrintSAXProcess {
 
     double[] cuts = na.getCuts(SAX_A_SIZE);
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("test_sax.txt")));
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File("test_sax.txt")))) {
 
-    // scan across the time series extract sub sequences, and convert them to strings
-    char[] previousString = null;
+      // scan across the time series extract sub sequences, and convert them to strings
+      char[] previousString = null;
 
-    for (int i = 0; i <= ts.length - SAX_WIN_SIZE; i++) {
+      for (int i = 0; i <= ts.length - SAX_WIN_SIZE; i++) {
 
       StringBuffer sb = new StringBuffer();
       sb.append(i).append(TAB);
@@ -82,9 +82,9 @@ public class PrintSAXProcess {
       sb.append("kept").append(CR);
       bw.write(sb.toString());
 
-    }
+      }
 
-    bw.close();
+    }
 
   }
 

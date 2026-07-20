@@ -1200,11 +1200,14 @@ public class HeatChart {
     iwp.setCompressionQuality(quality);
 
     // Output the image.
-    FileImageOutputStream output = new FileImageOutputStream(outputFile);
-    writer.setOutput(output);
-    IIOImage image = new IIOImage(chart, null, null);
-    writer.write(null, image, iwp);
-    writer.dispose();
+    try (FileImageOutputStream output = new FileImageOutputStream(outputFile)) {
+      writer.setOutput(output);
+      IIOImage image = new IIOImage(chart, null, null);
+      writer.write(null, image, iwp);
+    }
+    finally {
+      writer.dispose();
+    }
 
   }
 
