@@ -76,7 +76,7 @@ The code is written in Java and I use maven to build it. Use the profile `single
 	
 	...
 	
-	[INFO] Building jar: target/jmotif-sax-2.0.1-jar-with-dependencies.jar
+	[INFO] Building jar: target/jmotif-sax-2.0.2-jar-with-dependencies.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
 
@@ -84,7 +84,7 @@ The code is written in Java and I use maven to build it. Use the profile `single
 ------------
 The jar file can be used to convert a time series (represented as a single-column text file) to SAX via sliding window in command line:
 
-	$ java -jar target/jmotif-sax-2.0.1-jar-with-dependencies.jar
+	$ java -jar target/jmotif-sax-2.0.2-jar-with-dependencies.jar
 	Usage: <main class> [options] 
   	Options:
     		--alphabet_size, -a
@@ -107,7 +107,7 @@ The jar file can be used to convert a time series (represented as a single-colum
 
 When run, it prints the time series point index and a corresponding word:
 
- 	$ java -jar "target/jmotif-sax-2.0.1-jar-with-dependencies.jar" \ 
+ 	$ java -jar "target/jmotif-sax-2.0.2-jar-with-dependencies.jar" \ 
  	                      -d src/resources/test-data/ecg0606_1.csv -o test.txt
  	$ head test.txt
  	0, aabc
@@ -260,7 +260,7 @@ Note that for MINDIST numerosity reduction strategy the parallelized code perfor
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
 
 #### Versions:
-`2.0.1`
+`2.0.2`
   * maintenance release bundling post-2.0.0 fixes: parallel SAX pool reuse and `shutdown()`, stricter error handling on cancel/interrupt, Maven dependency scopes, JaCoCo 0.8.15, SLF4J 2.0.9 / Logback 1.3.14
   * cross-implementation checks live in [jmotif-conformance](https://github.com/jMotif/jmotif-conformance)
 
