@@ -14,6 +14,8 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
 
 ##### Note that most of the library's functionality is also available in [R](https://github.com/jMotif/jmotif-R), [Python (saxpy on PyPI)](https://pypi.org/project/saxpy/2.0.1/), [SAX-VSM](https://jmotif.github.io/sax-vsm_site/), and [GrammarViz 3.0](https://grammarviz2.github.io/grammarviz2_site/) as well...
 
+**Published stack (Jul 2026):** jmotif **1.3.2** ([CRAN](https://cran.r-project.org/package=jmotif)) · saxpy **2.0.1** ([PyPI](https://pypi.org/project/saxpy/2.0.1/)) · jmotif-sax / jmotif-gi / sax-vsm **2.0.2** (Maven Central) · GrammarViz **3.0.4** (Maven Central).
+
 ##### Cross-implementation alignment
 
 As of 2.0.0 the Java, R, and Python ([saxpy](https://github.com/seninp/saxpy))
