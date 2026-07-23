@@ -12,7 +12,7 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
   * time series bitmap-related routines [4]
   
 
-##### Note that most of the library's functionality is also available in [R](https://github.com/jMotif/jmotif-R), [Python (saxpy on PyPI)](https://pypi.org/project/saxpy/2.0.1/), [SAX-VSM](https://jmotif.github.io/sax-vsm_site/), and [GrammarViz 3.0](https://grammarviz2.github.io/grammarviz2_site/) as well...
+**Also available in** [R](https://github.com/jMotif/jmotif-R), [Python (saxpy on PyPI)](https://pypi.org/project/saxpy/2.0.1/), [SAX-VSM](https://jmotif.github.io/sax-vsm_site/), and [GrammarViz 3.0](https://grammarviz2.github.io/grammarviz2_site/).
 
 **Published stack (Jul 2026):** jmotif **1.3.2** ([CRAN](https://cran.r-project.org/package=jmotif)) · saxpy **2.0.1** ([PyPI](https://pypi.org/project/saxpy/2.0.1/)) · jmotif-sax / jmotif-gi / sax-vsm **2.0.2** (Maven Central) · GrammarViz **3.0.4** (Maven Central).
 
@@ -233,7 +233,7 @@ The [HOTSAXImplementation](https://github.com/jMotif/SAX/blob/master/src/main/ja
         System.out.println("hotsax hash discord " + d.toString());
       }
 
-Note that the "proper" strategy to use with HOTSAX is `NumerosityReductionStrategy.NONE` but you may try others in order to speed-up the search; exactness, however, is not guaranteed.
+For HOT-SAX, use `NumerosityReductionStrategy.NONE` for exact discord search. Other numerosity-reduction strategies can speed the search but may change the result.
 
 The library source code has examples (tests) for using these [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryNONE.java) and [here](https://github.com/jMotif/SAX/blob/master/src/test/java/net/seninp/jmotif/sax/discord/TestDiscordDiscoveryEXACT.java).
 	
@@ -254,7 +254,7 @@ and then clustered (`hc`, `ave`) based on the bigram occurrence frequencies (`eu
 ------------	
 The plot shows the speedup achieved when using the parallelized SAX version on the dataset [`300_signal1.txt`](https://raw.githubusercontent.com/jMotif/SAX/master/src/resources/test-data/300_signal1.txt) of length 536,976 points. Parameters used in the experiment: sliding window size 200, PAA size 11, alphabet size 7, and three different NR strategies.
 
-Note that for MINDIST numerosity reduction strategy the parallelized code performs NONE-based discretization first and prunes the result second. The difference in performance for 7+ CPUs on the plot below is due to the uneven server load, I guess.
+With the MINDIST numerosity-reduction strategy, the parallelized code discretizes with NONE first and prunes second. The 7+ CPU points on the plot below may reflect uneven server load during the benchmark run.
 
 ![Performance plot](https://raw.githubusercontent.com/jMotif/SAX/master/src/RCode/performance/profiling.png)
 
