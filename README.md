@@ -12,7 +12,7 @@ This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-license
   * time series bitmap-related routines [4]
   
 
-##### Note that most of the library's functionality is also available in [R](https://github.com/jMotif/jmotif-R), [Python (saxpy)](https://github.com/seninp/saxpy), [SAX-VSM](https://jmotif.github.io/sax-vsm_site/), and [GrammarViz 3.0](https://grammarviz2.github.io/grammarviz2_site/) as well...
+##### Note that most of the library's functionality is also available in [R](https://github.com/jMotif/jmotif-R), [Python (saxpy on PyPI)](https://pypi.org/project/saxpy/2.0.1/), [SAX-VSM](https://jmotif.github.io/sax-vsm_site/), and [GrammarViz 3.0](https://grammarviz2.github.io/grammarviz2_site/) as well...
 
 ##### Cross-implementation alignment
 
