@@ -263,6 +263,10 @@ With the MINDIST numerosity-reduction strategy, the parallelized code discretize
 
 #### Versions:
 `2.0.2`
+  * quality release: PMD + SpotBugs static-analysis gate, resource-leak fixes, `approximationDistance` z-norm threshold made consistent with `znorm()`, `TSProcessor` boxing removed in hot paths
+  * `logback-classic` is now **test** scope only -- runtime logging backend is the caller's choice
+
+`2.0.1`
   * maintenance release bundling post-2.0.0 fixes: parallel SAX pool reuse and `shutdown()`, stricter error handling on cancel/interrupt, Maven dependency scopes, JaCoCo 0.8.15, SLF4J 2.0.9 / Logback 1.3.14
   * cross-implementation checks live in [jmotif-conformance](https://github.com/jMotif/jmotif-conformance)
 
